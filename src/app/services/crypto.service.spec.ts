@@ -2,10 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { CryptoService } from './crypto.service';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { GlobalStats, Crypto } from '../shared/types/crypto';
+import { GlobalStats, Crypto, CryptoResponse } from '../shared/types/crypto';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Market } from '../shared/types/market';
 import { Social } from '../shared/types/social';
+import { generateUrl } from '../shared/helpers/generate-url';
 
 describe('CryptoService', () => {
   let service: CryptoService;
@@ -28,30 +29,36 @@ describe('CryptoService', () => {
   });
 
   it('should fetch all cryptos in listAllCryptos', () => {
-    const mockResponse: Crypto[] = [{
-      id: "1",
-      symbol: "BTC",
-      name: "Bitcoin",
-      nameid: "bitcoin",
-      rank: 1,
-      price_usd: "100000",
-      percent_change_24h: "1",
-      percent_change_1h: "1",
-      percent_change_7d: "1",
-      price_btc: "1",
-      market_cap_usd: "1",
-      volume_24h: 1,
-      volume_24a: 1,
-      csupply: "1",
-      tsupply: "1",
-      msupply: "1",
-    }];
+    const mockResponse: CryptoResponse = {
+      data: [{
+        id: "1",
+        symbol: "BTC",
+        name: "Bitcoin",
+        nameid: "bitcoin",
+        rank: 1,
+        price_usd: "100000",
+        percent_change_24h: "1",
+        percent_change_1h: "1",
+        percent_change_7d: "1",
+        price_btc: "1",
+        market_cap_usd: "1",
+        volume_24h: 1,
+        volume_24a: 1,
+        csupply: "1",
+        tsupply: "1",
+        msupply: "1",
+      }],
+      info: {
+        coins_num: 1,
+        time: 1,
+      },
+    };
 
     service.listAllCryptos().subscribe((cryptos) => {
-      expect(cryptos).toEqual(mockResponse);
+      expect(cryptos).toEqual(mockResponse.data);
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/ticker`);
+    const req = httpMock.expectOne(`${generateUrl('/tickers/')}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -67,35 +74,41 @@ describe('CryptoService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/ticker`);
+    const req = httpMock.expectOne(`${generateUrl('/tickers/')}`);
     req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
   });
 
   it('should fetch coin market cap in listCryptoById', () => {
-    const mockResponse: Crypto[] = [{
-      id: "1",
-      symbol: "BTC",
-      name: "Bitcoin",
-      nameid: "bitcoin",
-      rank: 1,
-      price_usd: "100000",
-      percent_change_24h: "1",
-      percent_change_1h: "1",
-      percent_change_7d: "1",
-      price_btc: "1",
-      market_cap_usd: "1",
-      volume_24h: 1,
-      volume_24a: 1,
-      csupply: "1",
-      tsupply: "1",
-      msupply: "1",
-    }];
+    const mockResponse: CryptoResponse = {
+      data: [{
+        id: "1",
+        symbol: "BTC",
+        name: "Bitcoin",
+        nameid: "bitcoin",
+        rank: 1,
+        price_usd: "100000",
+        percent_change_24h: "1",
+        percent_change_1h: "1",
+        percent_change_7d: "1",
+        price_btc: "1",
+        market_cap_usd: "1",
+        volume_24h: 1,
+        volume_24a: 1,
+        csupply: "1",
+        tsupply: "1",
+        msupply: "1",
+      }],
+      info: {
+        coins_num: 1,
+        time: 1,
+      },
+    };
 
     service.listCryptoById("1").subscribe((cryptos) => {
       expect(cryptos).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/ticker/?id=1`);
+    const req = httpMock.expectOne(`${generateUrl('/ticker/?id=1')}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -111,7 +124,7 @@ describe('CryptoService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/ticker/?id=1`);
+    const req = httpMock.expectOne(`${generateUrl('/ticker/?id=1')}`);
     req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
   });
 
@@ -133,7 +146,7 @@ describe('CryptoService', () => {
       expect(stats).toEqual(mockResponse[0]);
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/global`);
+    const req = httpMock.expectOne(`${generateUrl('/global')}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -149,7 +162,7 @@ describe('CryptoService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/global`);
+    const req = httpMock.expectOne(`${generateUrl('/global')}`);
     req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
   });
 
@@ -169,7 +182,7 @@ describe('CryptoService', () => {
       expect(markets).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/markets/?id=1`);
+    const req = httpMock.expectOne(`${generateUrl('/markets/?id=1')}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -185,7 +198,7 @@ describe('CryptoService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/markets/?id=1`);
+    const req = httpMock.expectOne(`${generateUrl('/markets/?id=1')}`);
     req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
   });
 
@@ -205,7 +218,7 @@ describe('CryptoService', () => {
       expect(socials).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/social_stats/?id=1`);
+    const req = httpMock.expectOne(`${generateUrl('/social_stats/?id=1')}`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -221,7 +234,7 @@ describe('CryptoService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`${service['apiUrl']}/social_stats/?id=1`);
+    const req = httpMock.expectOne(`${generateUrl('/social_stats/?id=1')}`);
     req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
   });
 });

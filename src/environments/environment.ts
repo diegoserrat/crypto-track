@@ -1,4 +1,5 @@
 export const environment = {
     production: false,
-    coinloreBaseUrl: 'https://api.coinlore.net/api'
+    COINLORE_BASE_URL: 'https://api.coinlore.net/api',
+    CORS_PROXY: 'https://api.allorigins.win/raw?url='
 };

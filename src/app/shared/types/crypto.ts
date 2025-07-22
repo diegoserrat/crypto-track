@@ -17,6 +17,14 @@ export interface Crypto {
     msupply: string;
 }
 
+export interface CryptoResponse {
+    data: Crypto[];
+    info: { 
+        coins_num: number;
+        time: number;
+    }   
+}
+
 export interface GlobalStats {
     coins_count: number;
     active_markets: number;

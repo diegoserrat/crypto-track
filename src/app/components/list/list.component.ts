@@ -10,7 +10,20 @@ import { of } from 'rxjs';
   selector: 'crypto-track-list',
   standalone: true,
   imports: [CommonModule,  MatListModule, MatIconModule],
-  templateUrl: './list.component.html',
+  template: `
+    <mat-list>
+      @for (crypto of cryptos$ | async; track crypto) {
+        <mat-list-item>
+          <mat-icon matListItemIcon>folder</mat-icon>
+          <h3 matListItemTitle>{{crypto.name}}</h3>
+          <p matListItemLine>
+            <span>{{crypto.symbol}}</span>
+            <span class="demo-2"> -- {{crypto.market_cap_usd}}</span>
+          </p>
+        </mat-list-item>
+      }
+    </mat-list>
+  `,
   styleUrl: './list.component.scss',
   
 })
